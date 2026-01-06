@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Contadores especiales</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display&family=Mountains+of+Christmas&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    background: #000;
+    color: white;
+    font-family: 'Playfair Display', serif;
+}
+
+section {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    text-align: center;
+    padding: 60px 20px;
+}
+
+h1 {
+    font-family: 'Great Vibes', cursive;
+    font-size: 3em;
+    margin-bottom: 20px;
+}
+
+.contador {
+    font-size: 1.6em;
+    margin-bottom: 20px;
+}
+
+.foto {
+    width: 280px;
+    height: 280px;
+    margin: 0 auto 20px;
+    border-radius: 20px;
+    background-size: cover;
+    background-position: center;
+    transition: opacity 1.5s;
+}
+
+/* SECCIONES */
+.romantica {
+    background: linear-gradient(135deg, #3a0f2e, #1a0b1c);
+}
+.romantica2 {
+    background: linear-gradient(135deg, #0f1c3a, #0b112a);
+}
+.navidad {
+    background: linear-gradient(135deg, #0b3d2e, #14532d);
+}
+.navidad h1 {
+    font-family: 'Mountains of Christmas', cursive;
+    color: gold;
+}
+.custom {
+    background: linear-gradient(135deg, #2b2b3d, #3a3a5c);
+}
+
+/* FLOTANTES */
+.flotante {
+    position: absolute;
+    animation: flotar linear infinite;
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+@keyframes flotar {
+    from { transform: translateY(110vh) rotate(0deg); }
+    to { transform: translateY(-120vh) rotate(360deg); }
+}
+
+/* FORMULARIO */
+form {
+    max-width: 400px;
+    margin: 0 auto 30px;
+}
+input, button {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 10px;
+    border: none;
+}
+button {
+    cursor: pointer;
+}
+
+/* ===== ADAPTACIÓN MÓVIL ===== */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.2em;
+    }
+    .contador {
+        font-size: 1.3em;
+    }
+    .foto {
+        width: 220px;
+        height: 220px;
+    }
+    section {
+        padding: 40px 15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ZONA 1 -->
+<section class="romantica">
+    <h1>Fíjate tú cuánto tiempo llevas queriéndome</h1>
+    <div id="contador1" class="contador"></div>
+    <div id="foto1" class="foto"></div>
+</section>
+
+<!-- ZONA 2 -->
+<section class="romantica2">
+    <h1>Este es el tiempo que llevas escribiéndome buenas noches todos los días</h1>
+    <div id="contador2" class="contador"></div>
+    <div id="foto2" class="foto"></div>
+</section>
+
+<!-- NAVIDAD -->
+<section class="navidad">
+    <h1>🎄 Tiempo que falta para Navidad 🎄</h1>
+    <div id="contadorNavidad" class="contador"></div>
+    <div class="foto" style="background-image:url('imagenes/navidad/fondo.jpg')"></div>
+</section>
+
+<!-- CONTADORES PERSONALIZADOS -->
+<section class="custom">
+    <h1>➕ Contadores personalizados</h1>
+
+    <form id="formCustom">
+        <input type="text" id="tituloCustom" placeholder="Texto del contador" required>
+        <input type="datetime-local" id="fechaCustom" required>
+        <input type="file" id="fotoCustom" accept="image/*">
+        <button type="submit">Añadir contador</button>
+    </form>
+
+    <div id="custom"></div>
+</section>
+
+<script>
+/* ===== FECHAS BASE ===== */
+const fecha1 = new Date(2025, 8, 30, 14, 35);
+const fecha2 = new Date(2025, 7, 14, 19, 0);
+
+/* ===== CONTAR DESDE ===== */
+function contarDesde(fecha, id) {
+    const ahora = new Date();
+    let s = Math.floor((ahora - fecha) / 1000);
+    if (s < 0) return;
+
+    const d = Math.floor(s / 86400); s %= 86400;
+    const h = Math.floor(s / 3600);  s %= 3600;
+    const m = Math.floor(s / 60);    s %= 60;
+
+    document.getElementById(id).textContent =
+        `${d} días, ${h} horas, ${m} minutos y ${s} segundos`;
+}
+
+/* ===== NAVIDAD ===== */
+function actualizarNavidad() {
+    const ahora = new Date();
+    let navidad = new Date(ahora.getFullYear(), 11, 25);
+    if (ahora > navidad) navidad.setFullYear(navidad.getFullYear() + 1);
+    const diff = new Date(ahora - (navidad - ahora));
+    contarDesde(diff, "contadorNavidad");
+}
+
+/* ===== FOTOS ROTATIVAS ===== */
+function rotarFotos(id, carpeta, total) {
+    let i = 1;
+    setInterval(() => {
+        document.getElementById(id).style.backgroundImage =
+            `url('imagenes/${carpeta}/${i}.jpg')`;
+        i = i % total + 1;
+    }, 3000);
+}
+
+/* ===== FLOTANTES ===== */
+function crearFlotantes(seccion, emojis, cantidad) {
+    for (let i = 0; i < cantidad; i++) {
+        const e = document.createElement("div");
+        e.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        e.className = "flotante";
+        e.style.left = Math.random() * 100 + "%";
+        e.style.fontSize = 20 + Math.random() * 30 + "px";
+        e.style.animationDuration = 10 + Math.random() * 20 + "s";
+        seccion.appendChild(e);
+    }
+}
+
+/* ===== CUSTOM PERSISTENTE ===== */
+let contadoresCustom = JSON.parse(localStorage.getItem("contadoresCustom")) || [];
+
+function guardarCustom() {
+    localStorage.setItem("contadoresCustom", JSON.stringify(contadoresCustom));
+}
+
+function pintarCustom() {
+    const zona = document.getElementById("custom");
+    zona.innerHTML = "";
+
+    contadoresCustom.forEach(c => {
+        const div = document.createElement("div");
+        div.innerHTML = `
+            <h2>${c.titulo}</h2>
+            <div class="contador" id="custom_${c.id}"></div>
+            ${c.imagen ? `<img src="${c.imagen}" width="200" style="border-radius:15px">` : ""}
+            <br>
+            <button onclick="borrarCustom(${c.id})">❌ Borrar</button>
+        `;
+        zona.appendChild(div);
+    });
+}
+
+function borrarCustom(id) {
+    contadoresCustom = contadoresCustom.filter(c => c.id !== id);
+    guardarCustom();
+    pintarCustom();
+}
+
+document.getElementById("formCustom").addEventListener("submit", e => {
+    e.preventDefault();
+
+    const titulo = tituloCustom.value;
+    const fecha = new Date(fechaCustom.value);
+    const file = fotoCustom.files[0];
+    const id = Date.now();
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            contadoresCustom.push({ id, titulo, fecha: fecha.getTime(), imagen: reader.result });
+            guardarCustom();
+            pintarCustom();
+        };
+        reader.readAsDataURL(file);
+    } else {
+        contadoresCustom.push({ id, titulo, fecha: fecha.getTime(), imagen: null });
+        guardarCustom();
+        pintarCustom();
+    }
+
+    e.target.reset();
+});
+
+/* ===== LOOP ===== */
+setInterval(() => {
+    contarDesde(fecha1, "contador1");
+    contarDesde(fecha2, "contador2");
+    actualizarNavidad();
+    contadoresCustom.forEach(c =>
+        contarDesde(new Date(c.fecha), `custom_${c.id}`)
+    );
+}, 1000);
+
+/* ===== INICIO ===== */
+rotarFotos("foto1", "zona1", 6);
+rotarFotos("foto2", "zona2", 6);
+
+crearFlotantes(document.querySelector(".romantica"), ["❤️","💋"], 25);
+crearFlotantes(document.querySelector(".romantica2"), ["❤️","💋"], 25);
+crearFlotantes(document.querySelector(".navidad"), ["🎄","❄️","🎁"], 30);
+
+pintarCustom();
+</script>
+
+</body>
+</html>
