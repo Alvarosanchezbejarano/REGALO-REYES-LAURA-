@@ -151,10 +151,22 @@ function contarDesde(fecha, id) {
 /* NAVIDAD */
 function actualizarNavidad() {
     const ahora = new Date();
-    let navidad = new Date(ahora.getFullYear(), 11, 25);
-    if (ahora > navidad) navidad.setFullYear(navidad.getFullYear() + 1);
-    contarDesde(ahora - (navidad - ahora), "contadorNavidad");
+    let navidad = new Date(ahora.getFullYear(), 11, 25, 0, 0, 0);
+
+    if (ahora > navidad) {
+        navidad.setFullYear(navidad.getFullYear() + 1);
+    }
+
+    let s = Math.floor((navidad - ahora) / 1000);
+
+    const d = Math.floor(s / 86400); s %= 86400;
+    const h = Math.floor(s / 3600);  s %= 3600;
+    const m = Math.floor(s / 60);    s %= 60;
+
+    document.getElementById("contadorNavidad").textContent =
+        `${d} días, ${h} horas, ${m} minutos y ${s} segundos`;
 }
+
 
 /* ROTAR FONDOS */
 function rotarFondos(seccion, carpeta, total) {
