@@ -221,7 +221,7 @@ function borrarCustom(id) {
     pintarCustom();
 }
 
-formCustom.addEventListener("submit", e => {
+document.getElementById("formCustom").addEventListener("submit", e => {
     e.preventDefault();
     const id = Date.now();
 
