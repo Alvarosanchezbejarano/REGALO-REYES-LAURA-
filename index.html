@@ -11,7 +11,7 @@
 <style>
 body {
     margin: 0;
-    background: #000;
+    background: black;
     color: white;
     font-family: 'Playfair Display', serif;
 }
@@ -19,12 +19,14 @@ body {
 section {
     position: relative;
     min-height: 100vh;
-    overflow: hidden;
-    text-align: center;
     padding: 60px 20px;
+    text-align: center;
+    overflow: hidden;
+
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+
     transition: background-image 1.5s ease-in-out;
 }
 
@@ -36,23 +38,26 @@ h1 {
 
 .contador {
     font-size: 1.6em;
-    margin-bottom: 20px;
 }
 
 /* SECCIONES */
-.romantica {
-    background-image: url("/REGALO-REYES-LAURA-/imagenes/zona1/1.jpg");
+.zona1 {
+    background-image: url("/REGALO-REYES-LAURA-/imagenes/1.jpg");
 }
-.romantica2 {
-    background-image: url("/REGALO-REYES-LAURA-/imagenes/zona2/1.jpg");
+
+.zona2 {
+    background-image: url("/REGALO-REYES-LAURA-/imagenes/7.jpg");
 }
+
 .navidad {
-    background-image: url("/REGALO-REYES-LAURA-/imagenes/navidad/fondo.jpg");
+    background-image: url("/REGALO-REYES-LAURA-/imagenes/13.jpg");
 }
+
 .navidad h1 {
     font-family: 'Mountains of Christmas', cursive;
     color: gold;
 }
+
 .custom {
     background: linear-gradient(135deg, #2b2b3d, #3a3a5c);
 }
@@ -60,89 +65,60 @@ h1 {
 /* FLOTANTES */
 .flotante {
     position: absolute;
+    pointer-events: none;
     animation: flotar linear infinite;
     opacity: 0.8;
-    pointer-events: none;
 }
 
 @keyframes flotar {
     from { transform: translateY(110vh) rotate(0deg); }
-    to { transform: translateY(-120vh) rotate(360deg); }
-}
-
-/* FORMULARIO */
-form {
-    max-width: 400px;
-    margin: 0 auto 30px;
-}
-input, button {
-    width: 100%;
-    padding: 10px;
-    margin: 8px 0;
-    border-radius: 10px;
-    border: none;
-}
-button {
-    cursor: pointer;
+    to   { transform: translateY(-120vh) rotate(360deg); }
 }
 
 /* MÓVIL */
 @media (max-width: 768px) {
     h1 { font-size: 2.2em; }
     .contador { font-size: 1.3em; }
-    section { padding: 40px 15px; }
 }
 </style>
 </head>
 
 <body>
 
-<!-- ZONA 1 -->
-<section class="romantica">
+<section class="zona1">
     <h1>🤍 ¿sabías el tiempo exacto que llevamos juntos? 🤍</h1>
     <div id="contador1" class="contador"></div>
 </section>
 
-<!-- ZONA 2 -->
-<section class="romantica2">
+<section class="zona2">
     <h1>El tiempo desde que te creíste que soy del Athletic</h1>
     <div id="contador2" class="contador"></div>
 </section>
 
-<!-- NAVIDAD -->
 <section class="navidad">
     <h1>🎄 Tiempo que falta para Navidad 🎄</h1>
     <div id="contadorNavidad" class="contador"></div>
 </section>
 
-<!-- CONTADORES PERSONALIZADOS -->
 <section class="custom">
     <h1>➕ Contadores personalizados</h1>
-
-    <form id="formCustom">
-        <input type="text" id="tituloCustom" placeholder="Texto del contador" required>
-        <input type="datetime-local" id="fechaCustom" required>
-        <input type="file" id="fotoCustom" accept="image/*">
-        <button type="submit">Añadir contador</button>
-    </form>
-
     <div id="custom"></div>
 </section>
 
 <script>
-/* FECHAS BASE */
+/* FECHAS */
 const fecha1 = new Date(2025, 8, 30, 14, 35);
 const fecha2 = new Date(2025, 7, 14, 19, 0);
 
-/* CONTADOR */
+/* CONTAR DESDE */
 function contarDesde(fecha, id) {
     const ahora = new Date();
     let s = Math.floor((ahora - fecha) / 1000);
     if (s < 0) return;
 
     const d = Math.floor(s / 86400); s %= 86400;
-    const h = Math.floor(s / 3600);  s %= 3600;
-    const m = Math.floor(s / 60);    s %= 60;
+    const h = Math.floor(s / 3600); s %= 3600;
+    const m = Math.floor(s / 60); s %= 60;
 
     document.getElementById(id).textContent =
         `${d} días, ${h} horas, ${m} minutos y ${s} segundos`;
@@ -155,22 +131,22 @@ function actualizarNavidad() {
     if (ahora > navidad) navidad.setFullYear(navidad.getFullYear() + 1);
 
     let s = Math.floor((navidad - ahora) / 1000);
-
     const d = Math.floor(s / 86400); s %= 86400;
-    const h = Math.floor(s / 3600);  s %= 3600;
-    const m = Math.floor(s / 60);    s %= 60;
+    const h = Math.floor(s / 3600); s %= 3600;
+    const m = Math.floor(s / 60); s %= 60;
 
     document.getElementById("contadorNavidad").textContent =
         `${d} días, ${h} horas, ${m} minutos y ${s} segundos`;
 }
 
 /* ROTAR FONDOS */
-function rotarFondos(seccion, carpeta, total) {
-    let i = 1;
+function rotarFondos(seccion, inicio, fin) {
+    let i = inicio;
     setInterval(() => {
         seccion.style.backgroundImage =
-            `url('/REGALO-REYES-LAURA-/imagenes/${carpeta}/${i}.jpg')`;
-        i = i % total + 1;
+            `url('/REGALO-REYES-LAURA-/imagenes/${i}.jpg')`;
+        i++;
+        if (i > fin) i = inicio;
     }, 3000);
 }
 
@@ -187,85 +163,20 @@ function crearFlotantes(seccion, emojis, cantidad) {
     }
 }
 
-/* CUSTOM PERSISTENTE */
-let contadoresCustom = JSON.parse(localStorage.getItem("contadoresCustom")) || [];
-
-function guardarCustom() {
-    localStorage.setItem("contadoresCustom", JSON.stringify(contadoresCustom));
-}
-
-function pintarCustom() {
-    const zona = document.getElementById("custom");
-    zona.innerHTML = "";
-
-    contadoresCustom.forEach(c => {
-        const div = document.createElement("div");
-        div.innerHTML = `
-            <h2>${c.titulo}</h2>
-            <div class="contador" id="custom_${c.id}"></div>
-            ${c.imagen ? `<img src="${c.imagen}" width="200" style="border-radius:15px">` : ""}
-            <br>
-            <button onclick="borrarCustom(${c.id})">❌ Borrar</button>
-        `;
-        zona.appendChild(div);
-    });
-}
-
-function borrarCustom(id) {
-    contadoresCustom = contadoresCustom.filter(c => c.id !== id);
-    guardarCustom();
-    pintarCustom();
-}
-
-document.getElementById("formCustom").addEventListener("submit", e => {
-    e.preventDefault();
-    const id = Date.now();
-
-    if (fotoCustom.files[0]) {
-        const reader = new FileReader();
-        reader.onload = () => {
-            contadoresCustom.push({
-                id,
-                titulo: tituloCustom.value,
-                fecha: new Date(fechaCustom.value).getTime(),
-                imagen: reader.result
-            });
-            guardarCustom();
-            pintarCustom();
-        };
-        reader.readAsDataURL(fotoCustom.files[0]);
-    } else {
-        contadoresCustom.push({
-            id,
-            titulo: tituloCustom.value,
-            fecha: new Date(fechaCustom.value).getTime(),
-            imagen: null
-        });
-        guardarCustom();
-        pintarCustom();
-    }
-    e.target.reset();
-});
-
 /* LOOP */
 setInterval(() => {
     contarDesde(fecha1, "contador1");
     contarDesde(fecha2, "contador2");
     actualizarNavidad();
-    contadoresCustom.forEach(c =>
-        contarDesde(new Date(c.fecha), `custom_${c.id}`)
-    );
 }, 1000);
 
 /* INICIO */
-rotarFondos(document.querySelector(".romantica"), "zona1", 6);
-rotarFondos(document.querySelector(".romantica2"), "zona2", 6);
+rotarFondos(document.querySelector(".zona1"), 1, 6);
+rotarFondos(document.querySelector(".zona2"), 7, 12);
 
-crearFlotantes(document.querySelector(".romantica"), ["🤍","💋"], 25);
-crearFlotantes(document.querySelector(".romantica2"), ["🤍","😽"], 25);
+crearFlotantes(document.querySelector(".zona1"), ["🤍","💋"], 25);
+crearFlotantes(document.querySelector(".zona2"), ["🤍","😽"], 25);
 crearFlotantes(document.querySelector(".navidad"), ["🎄","❄️","🎁"], 30);
-
-pintarCustom();
 </script>
 
 </body>
