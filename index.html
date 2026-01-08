@@ -2,7 +2,6 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
- <base href="https://alvarosanchezbejarano.github.io/REGALO-REYES-LAURA-/">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Contadores especiales</title>
@@ -42,13 +41,13 @@ h1 {
 
 /* SECCIONES */
 .romantica {
-    background-image: url("imagenes/zona1/1.jpg");
+    background-image: url("/REGALO-REYES-LAURA-/imagenes/zona1/1.jpg");
 }
 .romantica2 {
-    background-image: url("imagenes/zona2/1.jpg");
+    background-image: url("/REGALO-REYES-LAURA-/imagenes/zona2/1.jpg");
 }
 .navidad {
-    background-image: url("imagenes/navidad/fondo.jpg");
+    background-image: url("/REGALO-REYES-LAURA-/imagenes/navidad/fondo.jpg");
 }
 .navidad h1 {
     font-family: 'Mountains of Christmas', cursive;
@@ -152,11 +151,8 @@ function contarDesde(fecha, id) {
 /* NAVIDAD */
 function actualizarNavidad() {
     const ahora = new Date();
-    let navidad = new Date(ahora.getFullYear(), 11, 25, 0, 0, 0);
-
-    if (ahora > navidad) {
-        navidad.setFullYear(navidad.getFullYear() + 1);
-    }
+    let navidad = new Date(ahora.getFullYear(), 11, 25);
+    if (ahora > navidad) navidad.setFullYear(navidad.getFullYear() + 1);
 
     let s = Math.floor((navidad - ahora) / 1000);
 
@@ -168,13 +164,12 @@ function actualizarNavidad() {
         `${d} días, ${h} horas, ${m} minutos y ${s} segundos`;
 }
 
-
 /* ROTAR FONDOS */
 function rotarFondos(seccion, carpeta, total) {
     let i = 1;
     setInterval(() => {
         seccion.style.backgroundImage =
-            `url('imagenes/${carpeta}/${i}.jpg')`;
+            `url('/REGALO-REYES-LAURA-/imagenes/${carpeta}/${i}.jpg')`;
         i = i % total + 1;
     }, 3000);
 }
